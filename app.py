@@ -1,6 +1,7 @@
 #!/bin/python3
 import os
 import argparse
+from utils import fetch_files
 from sys import exit
 from pathlib import Path
 from collections import deque
@@ -11,11 +12,11 @@ WINDOWS = 'nt'
 UNIX_LIKE = 'posix'
 SOURCE_FILE_PATH = Path(__file__).resolve().parent
 CURRENT_PATH = os.getcwd()
-TEMPLATE_DIR = f'{SOURCE_FILE_PATH}/static'
+TEMPLATE_DIR = f'{SOURCE_FILE_PATH}/templates'
 USERNAME = os.getlogin()
-PROGRAM_NAME = 'pythonic share'
+PROGRAM_NAME = 'ShareSphere'
 app = Flask(__name__, template_folder=TEMPLATE_DIR)
-
+#app.config["SEND_FILE_MAX_AGE_DEFAULT"] = -1 we should disable resending the static data that has been once sent. 
 parser = argparse.ArgumentParser(prog=PROGRAM_NAME)
 if OS == UNIX_LIKE:
   parser.add_argument('-d', '--directory', action='store', default='~/Downloads')
@@ -29,7 +30,7 @@ if share_path[0] == '~' and OS == UNIX_LIKE:
   share_path.popleft()
   share_path.appendleft(f'/home/{USERNAME}')
 elif share_path[0] == '~' and OS == WINDOWS:
-  print('<~> operator is not supported on windows')
+  print('< ~ > operator is not supported on windows')
   exit(1)
 
 if share_path[0] == '.':
@@ -39,14 +40,14 @@ if share_path[0] == '.':
 share_path = ''.join(share_path)
 
 try:
-  files = [i.name for i in os.scandir(share_path) if i.is_file()]
+  files = fetch_files(share_path)
 except FileNotFoundError:
   print('This directory doesn\'t exist')
   exit(1)
 
 @app.route('/')
 def hello_world():
-  return render_template('router_home_page.html', files=files)
+  return render_template('index.html', files=files)
 
 
 @app.route('/download/<path:name>')
