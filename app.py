@@ -12,10 +12,12 @@ WINDOWS = 'nt'
 UNIX_LIKE = 'posix'
 SOURCE_FILE_PATH = Path(__file__).resolve().parent
 CURRENT_PATH = os.getcwd()
-TEMPLATE_DIR = f'{SOURCE_FILE_PATH}/templates'
+TEMPLATE_DIR = f'{SOURCE_FILE_PATH}/ShareSphere-Front-end/templates'
+STATIC_DIR = f'{SOURCE_FILE_PATH}/ShareSphere-Front-end/static'
+
 USERNAME = os.getlogin()
 PROGRAM_NAME = 'ShareSphere'
-app = Flask(__name__, template_folder=TEMPLATE_DIR)
+app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
 #app.config["SEND_FILE_MAX_AGE_DEFAULT"] = -1 we should disable resending the static data that has been once sent. 
 parser = argparse.ArgumentParser(prog=PROGRAM_NAME)
 if OS == UNIX_LIKE:
@@ -54,6 +56,14 @@ def hello_world():
 def download_file(name, path=share_path):
   print(f'Someone is picking up <{name}> in >> {path}')
   return send_from_directory(path, name, as_attachment=True)
+
+@app.route('/AboutUs')
+def about_us():
+  return render_template('about.html')
+
+@app.route('/Source')
+def source_code():
+  return render_template('sourcecode.html')
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0')
