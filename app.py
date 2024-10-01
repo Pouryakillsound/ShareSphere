@@ -12,8 +12,8 @@ WINDOWS = 'nt'
 UNIX_LIKE = 'posix'
 SOURCE_FILE_PATH = Path(__file__).resolve().parent
 CURRENT_PATH = os.getcwd()
-TEMPLATE_DIR = f'{SOURCE_FILE_PATH}/ShareSphere-Front-end/templates'
-STATIC_DIR = f'{SOURCE_FILE_PATH}/ShareSphere-Front-end/static'
+TEMPLATE_DIR = f'{SOURCE_FILE_PATH}/templates'
+STATIC_DIR = f'{SOURCE_FILE_PATH}/static'
 
 USERNAME = os.getlogin()
 PROGRAM_NAME = 'ShareSphere'
