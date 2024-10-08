@@ -20,5 +20,4 @@ def fetch_size(address: str):
     return f"{size // (1024)} KB"
 
 def fetch_files(dir):
-  std_length_of_name = 100
-  return [(i.name if len(i.name) < std_length_of_name else i.name[:std_length_of_name], fetch_type(i.name), fetch_size(os.path.abspath(dir) + "/" + i.name)) for i in os.scandir(dir) if i.is_file()]
+  return [(i.name, fetch_type(i.name), fetch_size(os.path.abspath(dir) + "/" + i.name)) for i in os.scandir(dir) if i.is_file()]
