@@ -18,7 +18,6 @@ STATIC_DIR = f'{SOURCE_FILE_PATH}/static'
 USERNAME = os.getlogin()
 PROGRAM_NAME = 'ShareSphere'
 app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
-#app.config["SEND_FILE_MAX_AGE_DEFAULT"] = -1 we should disable resending the static data that has been once sent. 
 parser = argparse.ArgumentParser(prog=PROGRAM_NAME)
 if OS == UNIX_LIKE:
   parser.add_argument('-d', '--directory', action='store', default='~/Downloads')

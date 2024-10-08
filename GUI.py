@@ -22,9 +22,9 @@ def run_program():
     prog_running = True
     if sel_dir.get() == 1:
       folder_path = filedialog.askdirectory()
-      proc = subprocess.Popen(["python", "app.py", "-d", folder_path], stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,  text=True, bufsize=1) # Flask IP reading
+      proc = subprocess.Popen(["python", "app.py", "-d", folder_path], stdout=subprocess.PIPE,  stderr=subprocess.PIPE,  text=True)
     else:
-      proc = subprocess.Popen(["python", "app.py"], stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,  text=True, bufsize=1) # Flask IP reading
+      proc = subprocess.Popen(["python", "app.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE,  text=True)
 
     for _ in range(5):
       output = proc.stderr.readline()
