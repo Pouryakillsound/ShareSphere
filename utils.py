@@ -1,14 +1,8 @@
 import os
 
 def fetch_type(s: str):
-  res = ""
-  for i in reversed(s):
-    if i == ".":
-      break
-    res += i
-  else:
-    return ""
-  return "".join([i for i in reversed(res)])
+  s = s.rsplit('.')
+  return s[-1] if len(s) > 1 else ''
 
 def fetch_size(address: str):
   size = os.stat(address).st_size

@@ -1,3 +1,4 @@
+#!/bin/python3
 import atexit
 import webbrowser
 import subprocess
@@ -12,7 +13,7 @@ root["bg"] = "#222"
 root.resizable(width=False, height=False)
 root.geometry("450x400")
 root.title("ShareSphere")
-root.iconbitmap("static/Assets/favicon.ico")
+#root.iconbitmap("static/Assets/favicon.ico")
 
 
 def run_program():
@@ -20,7 +21,7 @@ def run_program():
   if not prog_running:
     button.configure(text="Stop", command=close_program, state="active")
     prog_running = True
-    if sel_dir.get() == 1:
+    if sel_dir.get():
       folder_path = filedialog.askdirectory()
       proc = subprocess.Popen(["python", "app.py", "-d", folder_path], stdout=subprocess.PIPE,  stderr=subprocess.PIPE,  text=True)
     else:
@@ -28,9 +29,9 @@ def run_program():
 
     for _ in range(5):
       output = proc.stderr.readline()
-
       if "Running on http" in output:
         ip = output[21:]
+    
     label_2.configure(text=ip)
     label_2.bind("<Button-1>", lambda e: webbrowser.open_new_tab(f"http://{ip}"))
 

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sourcecode.css') }}"> 
+    <link href="{{ url_for('static', filename='Assets/favicon.ico') }}" rel="icon" type="image/x-icon">
+    <script src="{{ url_for('static', filename='2f2a347de4.js') }}" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='upload.css') }}">
+    <title>Upload Files</title>
+</head>
+
+<body>
+
+    
+    <h1 class="Typo">ShareSphere</h1>
+
+
+        <div class="navbar">
+          <a href="/Source">Source code</a>
+          <a href="/">My Files</a>
+          <a href="/Upload">Upload Files</a>
+          <a href="/AboutUs">About us</a>
+        </div>
+
+  <form action="/Upload" method="post" enctype="multipart/form-data">
+    <label for="file" > File </label>
+    <input name="file" type="file" id="file">
+    <button type="submit">Submit</button> 
+  </form>
+
+
+</body>
+</html>
