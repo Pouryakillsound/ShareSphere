@@ -14,13 +14,9 @@ from multiprocessing.shared_memory import SharedMemory
 from app import ShareSphere, DEFAULT_FOLDER
 
 
-# copile with: python -m nuitka --standalone --onefile --include-data-dir=templates=templates --include-data-dir=static=static\
-#  --enable-plugin=tk-inter --windows-console-mode=disable --windows-icon-from-ico=static\Assets\favicon1.ico --windows-force-stderr-spec=stderr.txt GUI.py
+'''copile with: python -m nuitka --standalone --onefile --include-data-dir=templates=templates --include-data-dir=static=static
+--enable-plugin=tk-inter --windows-console-mode=disable --windows-icon-from-ico=static\Assets\favicon1.ico --windows-force-stderr-spec=stderr.txt GUI.py'''
 
-
-# So we can read from streams
-#sys.stdout = open('stdout.txt', 'a+')
-#sys.stderr = open('stderr.txt', 'w+')
 
 class StringSharedMemory:
   def __init__(self):
