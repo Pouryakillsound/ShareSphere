@@ -1,9 +1,13 @@
 ShareSphere is a sharing system on your router which can be run on your desktop computer.
 
 **On Unix-likes**<br>
+First make sure you have flask installed so do:
+```bash
+pip3 install flask
+```
 In order to use it go to ShareSphere directory and run the following commands:
 ```bash
-pip3 install flask && ./app.py
+./app.py
 ```
 
 now you'll be given some IPs (Note: all your devices should be connected to one router
@@ -25,7 +29,7 @@ sudo ln -s [source_folder]/app.py /usr/local/bin/sharesphere
 ```
 
 
-.کره اشتراک گذاری یک سیستم اشتراک گذاری روی روتر شماست که میتونه روی کامپیوتر های شخصی اجرا بشه
+Sharesphere یک سیستم اشتراک گذاری روی روتر شماست که میتونه روی کامپیوتر های شخصی اجرا بشه
 
 **سیستم های بر پایه یونیکس**<br>
 برای احرای راه اندازی و استفاده از این برنامه دستورات زیر را پیروی کنید. 
