@@ -22,7 +22,7 @@ class StringSharedMemory:
   def __init__(self):
     self.count = 0
 
-    self.mem = SharedMemory(name='SSshm', create=True, size=10240) # 10240 bytes are probably enough
+    self.mem = SharedMemory(name='SSshm', create=True, size=10240) # 10240 bytes are probably enough but better way is to dynamically allocate
 
   def write(self, s: str):
     s = s.encode()
@@ -51,7 +51,12 @@ def close_program():
 def initializer():
   global p
   button.configure(text='Stop', command=close_program)
-  folder_address = filedialog.askdirectory() if sel_dir.get() else DEFAULT_FOLDER
+  if sel_dir.get():
+    folder_address = filedialog.askdirectory()
+    if not folder_address:
+      folder_address = DEFAULT_FOLDER
+  else:
+    folder_address = DEFAULT_FOLDER
   p = mp.Process(target=run_program, args=[folder_address, shared_mem], daemon=True)
   p.start()
 
