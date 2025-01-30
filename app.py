@@ -1,13 +1,9 @@
 #!/bin/python3
 import os
-import sys
 import argparse
-from pathlib import Path
-from flask import Flask, render_template, send_from_directory, request, flash, redirect
-
 from utils import fetch_files
-from logging.config import dictConfig
-
+from pathlib import Path
+from flask import Flask, request, render_template, send_from_directory, flash, redirect
 
 
 OS = os.name

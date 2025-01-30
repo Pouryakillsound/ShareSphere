@@ -20,12 +20,15 @@ class StringSharedMemory:
   def __init__(self, q: mp.Queue): self.queue = q
 
   def write(self, s: Union[str, bytes]):
-    s = s.decode() if type(s) == bytes else s
-    self.queue.put(s)
+    try:
+      s = s.decode() if type(s) == bytes else s
+      self.queue.put(s)
+    except:
+      pass
 
   def read(self): return self.queue.get().split('\n')
 
-  # Not needed
+  # Not needed but will be called on stderr and stdout
   def flush(self): pass
 
 
@@ -36,8 +39,10 @@ def run_program(folder_adderss, queued_stream):
 
 
 def initializer():
-  global p, p_alive, shared_mem
+  global p, p_alive
+
   button.configure(text='Stop', command=close_process)
+
   if sel_dir.get():
     folder_address = filedialog.askdirectory()
     if not folder_address:
@@ -45,6 +50,8 @@ def initializer():
   else:
     folder_address = DEFAULT_FOLDER
 
+  # Creating an instance per start will fix the bug of queuing "Picking up ..." log comming from app.py to stdout
+  shared_mem = StringSharedMemory(mp.Queue())
   p = mp.Process(target=run_program, args=[folder_address, shared_mem], daemon=True)
   p.start()
   p_alive = True
@@ -59,10 +66,9 @@ def initializer():
         break
 
     if ip:
+      label_2.configure(text=ip)
+      label_2.bind('<Button-1>', lambda e: webbrowser.open_new_tab(f"http://{ip}"))
       break
-
-  label_2.configure(text=ip)
-  label_2.bind('<Button-1>', lambda e: webbrowser.open_new_tab(f"http://{ip}"))
 
 def close_process():
   global p_alive
@@ -120,8 +126,7 @@ if __name__ == "__main__":
                     )
 
   mp.set_start_method('fork') if OS == UNIX_LIKE else mp.set_start_method('spawn')
-  q = mp.Queue()
-  shared_mem = StringSharedMemory(q)
+  
 
   label_1.pack()
   label_2.pack()
