@@ -1,50 +1,37 @@
 #!/bin/python3
 
-import os
 import sys
-import array
+import mmap
 import atexit
+from typing import Union
 import webbrowser
 import tkinter as tk
 import multiprocessing as mp
 from pathlib import Path
 from tkinter import filedialog
-from multiprocessing.shared_memory import SharedMemory
 
 from app import *
 
 
-'''copile with: python -m nuitka --standalone --onefile --include-data-dir=templates=templates --include-data-dir=static=static
---enable-plugin=tk-inter --windows-console-mode=disable --windows-icon-from-ico=static\Assets\favicon1.ico --windows-force-stderr-spec=stderr.txt GUI.py'''
+r'''copile with: python -m nuitka --standalone --onefile --include-data-dir=templates=templates --include-data-dir=static=static
+--enable-plugin=tk-inter --windows-console-mode=disable --windows-icon-from-ico=static\Assets\favicon1.ico  GUI.py'''
 
 
 class StringSharedMemory:
-  def __init__(self):
-    self.count = 0
-    self.init_size = 10240
-    self.mem = SharedMemory(name='SSshm', create=True, size=self.init_size) # 10240 bytes are probably enough but better way is to dynamically allocate
+  def __init__(self, q: mp.Queue): self.queue = q
 
+  def write(self, s: Union[str, bytes]):
+    s = s.decode() if type(s) == bytes else s
+    self.queue.put(s)
 
-  def write(self, s: str):
-    s = s.encode()
-    length = len(s)
-    self.mem.buf[self.count: (self.count + length)] = s
-    self.count += length
+  def read(self): return self.queue.get().split('\n')
 
-  def read(self):
-    return ''.join(list(map(chr, list(array.array('B', self.mem.buf))))).split('\n')
+  # Not needed
+  def flush(self): pass
 
-  def free(self):
-    if self.mem.buf:
-      self.mem.close()
-      self.mem.unlink()
-
-  def flush(self):
-    pass # It's not a tty Biaaatch
-
-def run_program(folder_adderss, stderr):
-  sys.stderr = stderr
-  sys.stdout = stderr
+def run_program(folder_adderss, queued_stream):
+  sys.stderr =  queued_stream
+  sys.stdout = queued_stream
   ShareSphere().run(folder_adderss)
 
 
@@ -58,21 +45,21 @@ def initializer():
   else:
     folder_address = DEFAULT_FOLDER
 
-  if shared_mem.mem.buf == None:
-    shared_mem = StringSharedMemory()
-
   p = mp.Process(target=run_program, args=[folder_address, shared_mem], daemon=True)
   p.start()
 
   while True:
     read_mem = shared_mem.read()
-    ip = 0
+    ip = None
+    
     for output in read_mem:
       if 'Running on' in output and '127' not in output and '0.0.0.0' not in output:
         ip = output[21:]
         break
+
     if ip:
       break
+
   label_2.configure(text=ip)
   label_2.bind('<Button-1>', lambda e: webbrowser.open_new_tab(f"http://{ip}"))
 
@@ -82,7 +69,6 @@ def close_process():
   label_2.bind('<Button-1>', '')
 
   p.terminate()
-  shared_mem.free()
 
 
 if __name__ == "__main__":
@@ -128,13 +114,16 @@ if __name__ == "__main__":
                       width=27,
                       font=24
                     )
+
   mp.set_start_method('fork') if OS == UNIX_LIKE else mp.set_start_method('spawn')
-  shared_mem = StringSharedMemory()
+  q = mp.Queue()
+  shared_mem = StringSharedMemory(q)
+
   label_1.pack()
   label_2.pack()
   button.pack()
   checkbutton.pack()
-  #favicon_addr = Path(os.path.join(os.path.dirname(__file__), 'static', 'Assets', 'favicon.xbm' if OS==LINUX_LIKE else 'favicon.ico))
-  #root.iconbitmap(favicon_addr)
-  atexit.register(shared_mem.free)
+  favicon_addr = Path(os.path.join(os.path.dirname(__file__), 'static', 'Assets', 'favicon.xbm' if OS==UNIX_LIKE else 'favicon.ico'))
+  root.iconbitmap(favicon_addr)
+
   root.mainloop()
