@@ -1,10 +1,11 @@
 #!/bin/python3
 
 import sys
-from typing import Union
+import atexit
 import webbrowser
 import tkinter as tk
 import multiprocessing as mp
+from typing import Union
 from pathlib import Path
 from tkinter import filedialog
 
@@ -27,6 +28,7 @@ class StringSharedMemory:
   # Not needed
   def flush(self): pass
 
+
 def run_program(folder_adderss, queued_stream):
   sys.stderr =  queued_stream
   sys.stdout = queued_stream
@@ -34,7 +36,7 @@ def run_program(folder_adderss, queued_stream):
 
 
 def initializer():
-  global p, shared_mem
+  global p, p_alive, shared_mem
   button.configure(text='Stop', command=close_process)
   if sel_dir.get():
     folder_address = filedialog.askdirectory()
@@ -45,6 +47,7 @@ def initializer():
 
   p = mp.Process(target=run_program, args=[folder_address, shared_mem], daemon=True)
   p.start()
+  p_alive = True
 
   while True:
     read_mem = shared_mem.read()
@@ -62,11 +65,14 @@ def initializer():
   label_2.bind('<Button-1>', lambda e: webbrowser.open_new_tab(f"http://{ip}"))
 
 def close_process():
+  global p_alive
   button.configure(text='Start', command=initializer) 
   label_2.configure(text='')
   label_2.bind('<Button-1>', '')
+  if p_alive:
+    p.terminate()
+    p_alive = False
 
-  p.terminate()
 
 
 if __name__ == "__main__":
@@ -123,5 +129,8 @@ if __name__ == "__main__":
   checkbutton.pack()
   favicon_addr = Path(os.path.join(os.path.dirname(__file__), 'static', 'Assets', 'favicon.xbm' if OS==UNIX_LIKE else 'favicon.ico'))
   root.iconbitmap(favicon_addr)
+
+  p_alive = False
+  atexit.register(lambda: p.terminate if p_alive else None)
 
   root.mainloop()
