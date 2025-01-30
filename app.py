@@ -7,15 +7,15 @@ from flask import Flask, request, render_template, send_from_directory, flash, r
 
 
 OS = os.name
-WINDOWS = 'nt'
-UNIX_LIKE = 'posix'
+WINDOWS = OS == 'nt'
+UNIX_LIKE = OS == 'posix'
 SOURCE_FILE_PATH = Path(__file__).resolve().parent
 CURRENT_PATH = os.getcwd()
 TEMPLATE_DIR = f'{SOURCE_FILE_PATH}/templates'
 STATIC_DIR = f'{SOURCE_FILE_PATH}/static'
 USERNAME = os.getlogin()
 PROGRAM_NAME = 'ShareSphere'
-DEFAULT_FOLDER = f"/home/{USERNAME}/Downloads" if OS == UNIX_LIKE else fr'C:\Users\{USERNAME}\Downloads'
+DEFAULT_FOLDER = f"/home/{USERNAME}/Downloads" if UNIX_LIKE else fr'C:\Users\{USERNAME}\Downloads'
 
 class ShareSphere:
   def __init__(self):
@@ -30,10 +30,10 @@ class ShareSphere:
     self.app.add_url_rule("/Upload", 'upload', self.upload, methods=['GET', 'POST'])
 
   def run(self, share_path=DEFAULT_FOLDER):
-    if share_path[0] == '~' and OS == UNIX_LIKE:
+    if share_path[0] == '~' and  UNIX_LIKE:
       share_path = os.path.join(f'/home/{USERNAME}/' + share_path[2:])
 
-    elif share_path[0] == '~' and OS == WINDOWS:
+    elif share_path[0] == '~' and WINDOWS:
       print('< ~ > operator is not supported on windows')
       exit(1)
 

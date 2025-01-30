@@ -125,14 +125,14 @@ if __name__ == "__main__":
                       font=24
                     )
 
-  mp.set_start_method('fork') if OS == UNIX_LIKE else mp.set_start_method('spawn')
+  mp.set_start_method('fork') if UNIX_LIKE else mp.set_start_method('spawn')
   
 
   label_1.pack()
   label_2.pack()
   button.pack()
   checkbutton.pack()
-  favicon_addr = Path(os.path.join(os.path.dirname(__file__), 'static', 'Assets', 'favicon.xbm' if OS==UNIX_LIKE else 'favicon.ico'))
+  favicon_addr = Path(os.path.join(os.path.dirname(__file__), 'static', 'Assets', 'favicon.xbm' if UNIX_LIKE else 'favicon.ico'))
   root.iconbitmap(favicon_addr)
 
   p_alive = False
