@@ -1,8 +1,6 @@
 #!/bin/python3
 
 import sys
-import mmap
-import atexit
 from typing import Union
 import webbrowser
 import tkinter as tk
