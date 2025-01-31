@@ -64,11 +64,12 @@ def initializer():
       if 'Running on' in output and '127' not in output and '0.0.0.0' not in output:
         ip = output[21:]
         break
+    else:
+      continue
 
-    if ip:
-      label_2.configure(text=ip)
-      label_2.bind('<Button-1>', lambda e: webbrowser.open_new_tab(f"http://{ip}"))
-      break
+    label_2.configure(text=ip)
+    label_2.bind('<Button-1>', lambda e: webbrowser.open_new_tab(f"http://{ip}"))
+    break
 
 def close_process():
   global p_alive
